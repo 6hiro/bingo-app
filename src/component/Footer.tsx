@@ -49,9 +49,9 @@ const Footer = (props: Props) => {
     
             setIsSpinning(false);
             
-            rouletteAudioState.playing && rouletteAudioControls.pause();
+            // rouletteAudioState.playing && rouletteAudioControls.pause();
             
-            await delay(2000);
+            await delay(2200);
             
 
             setIsVisible(false);
