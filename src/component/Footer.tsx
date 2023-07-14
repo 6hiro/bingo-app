@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { delay } from "../utils/delay";
 import { ImSpinner11 } from 'react-icons/im';
 import LotteryScreen from "./LotteryScreen";
+import useAudio from '../hooks/useAudio';
 
 type Props = {
     onNumberSelected: (number: number) => void,
@@ -14,12 +15,15 @@ const Footer = (props: Props) => {
     // const rouletteSound = new Audio("./finish.mp3");
     // const finishSound = new Audio("./finish.mp3");
     const [isVisible, setIsVisible] = useToggle(false);
+    const [rouletteAudio, rouletteAudioState, rouletteAudioControls] = useAudio({ src: "./roulette.mp3", autoPlay: false, loop:false, id: 'audio' });
+    const [finishAudio, finishAudioState, finishAudioControls] = useAudio({ src: "./finish.mp3", autoPlay: false, loop:false, id: 'audio' });
+
     
     let reversedSelectedNumbers = props.bingoGameState.selectedNumbers.map((_, i, a) => a[a.length - 1 - i])
 
     const [isSpinning, setIsSpinning] = useState<boolean>(false);
 
-
+    
     const handleSpin = useCallback(async() => {
         if(props.bingoGameState.numPlayers === props.bingoGameState.winnerNames.flat().length ) return
 
@@ -27,7 +31,8 @@ const Footer = (props: Props) => {
             setIsVisible(true);
             setIsSpinning(true);
 
-            await new Audio("./roulette.mp3").play();
+            // await new Audio("./roulette.mp3").play();
+            rouletteAudioControls.play();
             
             await delay(3000);
     
@@ -38,11 +43,15 @@ const Footer = (props: Props) => {
     
     
             props.onNumberSelected(randomNumber);
-            await new Audio("./finish.mp3").play();
+            rouletteAudioState.playing && rouletteAudioControls.pause();
+
+            finishAudioControls.play();
     
             setIsSpinning(false);
             
             await delay(2000);
+            finishAudioState.playing && finishAudioControls.pause();
+            
             setIsVisible(false);
         }
     }, [props.bingoGameState, isSpinning, isVisible]);
@@ -54,17 +63,17 @@ const Footer = (props: Props) => {
                 ?   <div 
                         className="lottery_screen"
                         style={{backgroundColor: `${isSpinning ? "#111" : "#fd236c"}`}}
-                    >   
-                            {isSpinning ? <div><LotteryScreen /> </div> : null }
+                    >  
+                        {isSpinning ? <div><LotteryScreen /> </div> : null }
 
-                            {!isSpinning  
-                                ? <div style={{color: "#fff", display: "flex"}} className="selected_number">
-                                        {props.bingoGameState.selectedNumbers.length > 1 
-                                            ? props.bingoGameState.selectedNumbers[props.bingoGameState.selectedNumbers.length-1] 
-                                            : null}
-                                    </div>
-                                : null
-                            }
+                        {!isSpinning  
+                            ? <div style={{color: "#fff", display: "flex"}} className="selected_number">
+                                    {props.bingoGameState.selectedNumbers.length > 1 
+                                        ? props.bingoGameState.selectedNumbers[props.bingoGameState.selectedNumbers.length-1] 
+                                        : null}
+                                </div>
+                            : null
+                        }
                     </div>
                 : null
             }
@@ -110,6 +119,8 @@ const Footer = (props: Props) => {
                         className={`footer__spin ${isSpinning ? "is_spinning" : ""} ${isVisible || props.bingoGameState.numPlayers === props.bingoGameState.winnerNames.flat().length ? "is_disable" : ""}`}
                         onClick={handleSpin} 
                     >
+                        {rouletteAudio}
+                        {finishAudio}
                         <ImSpinner11 />
                     </div>
                     
