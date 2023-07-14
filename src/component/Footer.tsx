@@ -15,7 +15,7 @@ const Footer = (props: Props) => {
     // const rouletteSound = new Audio("./finish.mp3");
     // const finishSound = new Audio("./finish.mp3");
     const [isVisible, setIsVisible] = useToggle(false);
-    const [rouletteAudio, rouletteAudioState, rouletteAudioControls] = useAudio({ src: "./roulette.mp3", autoPlay: false, loop:false, id: 'audio' });
+    // const [rouletteAudio, rouletteAudioState, rouletteAudioControls] = useAudio({ src: "./roulette.mp3", autoPlay: false, loop:false, id: 'audio' });
 
     
     let reversedSelectedNumbers = props.bingoGameState.selectedNumbers.map((_, i, a) => a[a.length - 1 - i])
@@ -24,17 +24,21 @@ const Footer = (props: Props) => {
 
     
     const handleSpin = useCallback(async() => {
-        console.log(rouletteAudioState.duration)
-        if(!rouletteAudioState.duration)return
+        // console.log(rouletteAudioState.duration)
+        // if(!rouletteAudioState.duration)return
         if(props.bingoGameState.numPlayers === props.bingoGameState.winnerNames.flat().length ) return
 
         if(!isSpinning && !isVisible){
             setIsVisible(true);
             setIsSpinning(true);
 
-            // await new Audio("./roulette.mp3").play();
-            rouletteAudioControls.seek(0);
-            rouletteAudioControls.play();
+            const audio = new Audio("./roulette.mp3");
+            audio.currentTime = 0;
+             audio.play();
+
+            await new Audio("./roulette.mp3").play();
+            // rouletteAudioControls.seek(0);
+            // rouletteAudioControls.play();
             
             await delay(2800);
     
@@ -56,7 +60,7 @@ const Footer = (props: Props) => {
 
             setIsVisible(false);
         }
-    }, [props.bingoGameState, isSpinning, isVisible, rouletteAudioState]);
+    }, [props.bingoGameState, isSpinning, isVisible]);
 
 
     return (
@@ -121,7 +125,7 @@ const Footer = (props: Props) => {
                         className={`footer__spin ${isSpinning ? "is_spinning" : ""} ${isVisible || props.bingoGameState.numPlayers === props.bingoGameState.winnerNames.flat().length ? "is_disable" : ""}`}
                         onClick={handleSpin} 
                     >
-                        {rouletteAudio}
+                        {/* {rouletteAudio} */}
                         <ImSpinner11 />
                     </div>
                     
