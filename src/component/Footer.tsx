@@ -5,18 +5,19 @@ import { delay } from "../utils/delay";
 import { ImSpinner11 } from 'react-icons/im';
 import LotteryScreen from "./LotteryScreen";
 
-
 type Props = {
     onNumberSelected: (number: number) => void,
     bingoGameState: BINGO_GAME,
 };
 
 const Footer = (props: Props) => {
+
     const [isVisible, setIsVisible] = useToggle(false);
     
     let reversedSelectedNumbers = props.bingoGameState.selectedNumbers.map((_, i, a) => a[a.length - 1 - i])
 
     const [isSpinning, setIsSpinning] = useState<boolean>(false);
+
 
     const handleSpin = useCallback(async() => {
         if(props.bingoGameState.numPlayers === props.bingoGameState.winnerNames.flat().length ) return
@@ -24,7 +25,9 @@ const Footer = (props: Props) => {
         if(!isSpinning && !isVisible){
             setIsVisible(true);
             setIsSpinning(true);
-        
+            new Audio("./roulette.mp3").play();
+
+            
             await delay(3000);
     
             const availableNumbers: number[] = Array.from({ length: 75 }, (_, index) => index + 1).filter(
@@ -34,6 +37,7 @@ const Footer = (props: Props) => {
     
     
             props.onNumberSelected(randomNumber);
+            new Audio("./finish.mp3").play();
     
             setIsSpinning(false);
             
