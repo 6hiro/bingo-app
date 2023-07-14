@@ -31,9 +31,10 @@ const Footer = (props: Props) => {
             setIsSpinning(true);
 
             // await new Audio("./roulette.mp3").play();
+            rouletteAudioControls.seek(0);
             rouletteAudioControls.play();
             
-            await delay(2500);
+            await delay(2800);
     
             const availableNumbers: number[] = Array.from({ length: 75 }, (_, index) => index + 1).filter(
                 (number) => !props.bingoGameState.selectedNumbers.includes(number)
@@ -43,14 +44,13 @@ const Footer = (props: Props) => {
     
             props.onNumberSelected(randomNumber);
             // console.log(rouletteAudioState.playing)
-
-            rouletteAudioState.playing && rouletteAudioControls.pause();
-
     
             setIsSpinning(false);
             
             await delay(2000);
             
+            rouletteAudioState.playing && rouletteAudioControls.pause();
+
             setIsVisible(false);
         }
     }, [props.bingoGameState, isSpinning, isVisible]);
