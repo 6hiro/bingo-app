@@ -4,7 +4,8 @@ import { useCallback, useState } from "react";
 import { delay } from "../utils/delay";
 import { ImSpinner11 } from 'react-icons/im';
 import LotteryScreen from "./LotteryScreen";
-// import useAudio from '../hooks/useAudio';
+import useAudio from '../hooks/useAudio';
+import { safari } from '../utils/browser';
 
 type Props = {
     onNumberSelected: (number: number) => void,
@@ -15,7 +16,7 @@ const Footer = (props: Props) => {
     // const rouletteSound = new Audio("./finish.mp3");
     // const finishSound = new Audio("./finish.mp3");
     const [isVisible, setIsVisible] = useToggle(false);
-    // const [rouletteAudio, rouletteAudioState, rouletteAudioControls] = useAudio({ src: "./roulette.mp3", autoPlay: false, loop:false, id: 'audio' });
+    const [rouletteAudio, rouletteAudioState, rouletteAudioControls] = useAudio({ src: "./roulette.mp3", autoPlay: false, loop:false, id: 'audio' });
 
     
     let reversedSelectedNumbers = props.bingoGameState.selectedNumbers.map((_, i, a) => a[a.length - 1 - i])
@@ -32,13 +33,15 @@ const Footer = (props: Props) => {
             setIsVisible(true);
             setIsSpinning(true);
 
-            const audio = new Audio("./roulette.mp3");
-            audio.currentTime = 0;
-             audio.play();
-
-            await new Audio("./roulette.mp3").play();
-            // rouletteAudioControls.seek(0);
-            // rouletteAudioControls.play();
+            if(safari) {
+                const audio = new Audio("./roulette.mp3");
+                audio.currentTime = 0;
+                audio.play();
+                console.log('safari')
+            }else{
+                rouletteAudioControls.seek(0);
+                rouletteAudioControls.play();
+            }
             
             await delay(2800);
     
@@ -52,14 +55,14 @@ const Footer = (props: Props) => {
     
             setIsSpinning(false);
             
-            // rouletteAudioState.playing && rouletteAudioControls.pause();
+            (!safari && rouletteAudioState.playing) && rouletteAudioControls.pause();
             
             await delay(2200);
             
 
             setIsVisible(false);
         }
-    }, [props.bingoGameState, isSpinning, isVisible]);
+    }, [props.bingoGameState, isSpinning, isVisible, rouletteAudioState]);
 
 
     return (
@@ -124,7 +127,7 @@ const Footer = (props: Props) => {
                         className={`footer__spin ${isSpinning ? "is_spinning" : ""} ${isVisible || props.bingoGameState.numPlayers === props.bingoGameState.winnerNames.flat().length ? "is_disable" : ""}`}
                         onClick={handleSpin} 
                     >
-                        {/* {rouletteAudio} */}
+                        {rouletteAudio}
                         <ImSpinner11 />
                     </div>
                     
