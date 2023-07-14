@@ -24,6 +24,8 @@ const Footer = (props: Props) => {
 
     
     const handleSpin = useCallback(async() => {
+        console.log(rouletteAudioState.duration)
+        if(!rouletteAudioState.duration)return
         if(props.bingoGameState.numPlayers === props.bingoGameState.winnerNames.flat().length ) return
 
         if(!isSpinning && !isVisible){
@@ -47,13 +49,14 @@ const Footer = (props: Props) => {
     
             setIsSpinning(false);
             
+            rouletteAudioState.playing && rouletteAudioControls.pause();
+            
             await delay(2000);
             
-            rouletteAudioState.playing && rouletteAudioControls.pause();
 
             setIsVisible(false);
         }
-    }, [props.bingoGameState, isSpinning, isVisible]);
+    }, [props.bingoGameState, isSpinning, isVisible, rouletteAudioState]);
 
 
     return (
