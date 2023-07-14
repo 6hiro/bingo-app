@@ -47,7 +47,6 @@ const Footer = (props: Props) => {
             );
             const randomNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
     
-    
             props.onNumberSelected(randomNumber);
             // console.log(rouletteAudioState.playing)
     
