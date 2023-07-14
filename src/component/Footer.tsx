@@ -29,7 +29,7 @@ const Footer = (props: Props) => {
 
             await new Audio("./roulette.mp3").play();
             
-            await delay(3050);
+            await delay(3000);
     
             const availableNumbers: number[] = Array.from({ length: 75 }, (_, index) => index + 1).filter(
                 (number) => !props.bingoGameState.selectedNumbers.includes(number)
@@ -42,7 +42,7 @@ const Footer = (props: Props) => {
     
             setIsSpinning(false);
             
-            await delay(2200);
+            await delay(2000);
             setIsVisible(false);
         }
     }, [props.bingoGameState, isSpinning, isVisible]);
