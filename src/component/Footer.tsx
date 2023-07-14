@@ -12,6 +12,9 @@ type Props = {
 
 const Footer = (props: Props) => {
 
+    const rouletteSound = new Audio("./roulette.mp3");
+    const finishSound = new Audio("./finish.mp3");
+
     const [isVisible, setIsVisible] = useToggle(false);
     
     let reversedSelectedNumbers = props.bingoGameState.selectedNumbers.map((_, i, a) => a[a.length - 1 - i])
@@ -25,8 +28,8 @@ const Footer = (props: Props) => {
         if(!isSpinning && !isVisible){
             setIsVisible(true);
             setIsSpinning(true);
-            new Audio("./roulette.mp3").play();
 
+            rouletteSound.play();
             
             await delay(3000);
     
@@ -37,11 +40,11 @@ const Footer = (props: Props) => {
     
     
             props.onNumberSelected(randomNumber);
-            new Audio("./finish.mp3").play();
+            finishSound.play();
     
             setIsSpinning(false);
             
-            await delay(2000);
+            await delay(2500);
             setIsVisible(false);
         }
     }, [props.bingoGameState, isSpinning, isVisible]);
